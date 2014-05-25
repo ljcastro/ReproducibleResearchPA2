@@ -119,7 +119,7 @@ econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP) == "K"] <- econDMG$CROPDMG[toupper(e
 ```
 
 
-With this new dataset, the data is summarized using the economic variables.
+With this new dataset, the data is summarized using the economic variables, and grouped by the top 10 events with more economic impact.
 
 
 ```r
@@ -136,3 +136,92 @@ economic.damage$EVENT <- reorder(economic.damage$EVENT, sort(economic.damage$TOT
 
 
 ##Results
+
+###Population Health Damage
+
+Based on the data calculated above, the top 10 events with the most damage in Population Health are:
+
+
+```r
+population.damage
+```
+
+```
+##                 EVENT FATALITIES INJURIES TOTAL
+## 834           TORNADO       5633    91346 96979
+## 130    EXCESSIVE HEAT       1903     6525  8428
+## 856         TSTM WIND        504     6957  7461
+## 170             FLOOD        470     6789  7259
+## 464         LIGHTNING        816     5230  6046
+## 275              HEAT        937     2100  3037
+## 153       FLASH FLOOD        978     1777  2755
+## 427         ICE STORM         89     1975  2064
+## 760 THUNDERSTORM WIND        133     1488  1621
+## 972      WINTER STORM        206     1321  1527
+```
+
+
+The following plot shows the distribution in both categories, FATALITIES and INJURIES:
+
+
+```r
+# melt data for plotting
+library(reshape2)
+meltedData <- melt(population.damage[, 1:3], id.vars = 1)
+
+# plot
+library(ggplot2)
+ggplot(data = meltedData, aes(x = EVENT, y = value, fill = variable)) + geom_bar(stat = "identity") + 
+    labs(y = "Population Damage") + labs(title = "Total Population Damage by Event Type") + 
+    theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 45, 
+        hjust = 1))
+```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
+
+
+
+
+###Economic Damage
+
+Based on the calculated data, these are the top 10 events which caused the most economic impact:
+
+
+```r
+economic.damage
+```
+
+```
+##                  EVENT PROPERTY      CROP  TOTAL
+## 351            TORNADO  109.937 1.604e+02 270.35
+## 70               FLOOD  144.658 5.662e+00 150.32
+## 58         FLASH FLOOD  144.541 1.421e+00 145.96
+## 325 THUNDERSTORM WINDS   30.736 8.819e+01 118.93
+## 193  HURRICANE/TYPHOON   69.306 2.608e+00  71.91
+## 202          ICE STORM   53.945 5.022e+00  58.97
+## 113               HAIL   48.732 6.026e+00  54.76
+## 297        STORM SURGE   43.324 5.000e-06  43.32
+## 38             DROUGHT    1.046 1.397e+01  15.02
+## 185          HURRICANE   11.868 2.742e+00  14.61
+```
+
+
+The plot below shows the economic damage caused by these events, and distributed by the type of economic damage as property or crop:
+
+
+```r
+# melt data for plotting
+library(reshape2)
+meltedData <- melt(economic.damage[, 1:3], id.vars = 1)
+
+# plot
+library(ggplot2)
+ggplot(data = meltedData, aes(x = EVENT, y = value, fill = variable)) + geom_bar(stat = "identity") + 
+    labs(y = "Economic Damage") + labs(title = "Total Economic Damage by Event Type") + 
+    theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 45, 
+        hjust = 1))
+```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+
+

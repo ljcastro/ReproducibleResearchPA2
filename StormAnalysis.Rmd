@@ -83,7 +83,7 @@ econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="M"] <- econDMG$CROPDMG[toupper(eco
 econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="K"] <- econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="K"]/1e+06
 ```
 
-With this new dataset, the data is summarized using the economic variables.
+With this new dataset, the data is summarized using the economic variables, and grouped by the top 10 events with more economic impact.
 
 ```{r cache=TRUE}
 economic.damage <- aggregate(cbind(econDMG$PROPDMG,
@@ -100,3 +100,56 @@ economic.damage$EVENT <- reorder(economic.damage$EVENT,
 
 
 ##Results
+
+###Population Health Damage
+
+Based on the data calculated above, the top 10 events with the most damage in Population Health are:
+
+```{r}
+population.damage
+```
+
+The following plot shows the distribution in both categories, FATALITIES and INJURIES:
+
+```{r}
+#melt data for plotting
+library(reshape2)
+meltedData <- melt(population.damage[,1:3],id.vars=1)
+
+#plot
+library(ggplot2)
+ggplot(data=meltedData, aes(x=EVENT, y=value, fill=variable)) + 
+       geom_bar(stat="identity") +
+       labs(y="Population Damage") +
+       labs(title="Total Population Damage by Event Type") +
+       theme(axis.title.x = element_blank(), 
+             axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+###Economic Damage
+
+Based on the calculated data, these are the top 10 events which caused the most economic impact:
+
+```{r}
+economic.damage
+```
+
+The plot below shows the economic damage caused by these events, and distributed by the type of economic damage as property or crop:
+
+```{r}
+#melt data for plotting
+library(reshape2)
+meltedData <- melt(economic.damage[,1:3],id.vars=1)
+
+#plot
+library(ggplot2)
+ggplot(data=meltedData, aes(x=EVENT, y=value, fill=variable)) + 
+       geom_bar(stat="identity") +
+       labs(y="Economic Damage") +
+       labs(title="Total Economic Damage by Event Type") +
+       theme(axis.title.x = element_blank(), 
+             axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
