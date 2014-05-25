@@ -181,7 +181,7 @@ hljs.initHighlightingOnLoad();
 <body>
 <h1>Tornado are the event with most impact on USA</h1>
 
-<p>#Synopsis</p>
+<p>##Synopsis</p>
 
 <p>This report describes how Tornadoes have a direct damage impact in both, population and economics, in the USA.</p>
 
@@ -189,7 +189,7 @@ hljs.initHighlightingOnLoad();
 
 <p>The events contained in the dataset are from years 1950 to 2011, although the more recent years are the more complete and rich, due to the lack in early years for collect data.</p>
 
-<p>#Data Processing</p>
+<p>##Data Processing</p>
 
 <p>As mentioned earlier, this dataset is a publication of the NOAA, but this report used a special dataset from the Reproducible Research course on Coursera, which can be downloaded <a href="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2">here</a>.</p>
 
@@ -278,6 +278,20 @@ econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP) == &quot;M&quot;] &lt;- econDMG$CROP
 econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP) == &quot;K&quot;] &lt;- econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP) == 
     &quot;K&quot;]/1e+06
 </code></pre>
+
+<p>With this new dataset, the data is summarized using the economic variables.</p>
+
+<pre><code class="r">economic.damage &lt;- aggregate(cbind(econDMG$PROPDMG, econDMG$CROPDMG, (econDMG$PROPDMG + 
+    econDMG$CROPDMG)) ~ econDMG$EVTYPE, FUN = sum)
+economic.damage &lt;- economic.damage[order(economic.damage[, 4], decreasing = T), 
+    ]
+names(economic.damage) &lt;- c(&quot;EVENT&quot;, &quot;PROPERTY&quot;, &quot;CROP&quot;, &quot;TOTAL&quot;)
+economic.damage &lt;- economic.damage[1:10, ]
+economic.damage$EVENT &lt;- reorder(economic.damage$EVENT, sort(economic.damage$TOTAL, 
+    decreasing = F))
+</code></pre>
+
+<p>##Results</p>
 
 </body>
 

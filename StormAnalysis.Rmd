@@ -1,7 +1,7 @@
 Tornado are the event with most impact on USA
 =============================================
 
-#Synopsis
+##Synopsis
 
 This report describes how Tornadoes have a direct damage impact in both, population and economics, in the USA.
 
@@ -10,7 +10,7 @@ Based on the *Storm Data* database, which is an official publication of the **Na
 The events contained in the dataset are from years 1950 to 2011, although the more recent years are the more complete and rich, due to the lack in early years for collect data.
 
 
-#Data Processing
+##Data Processing
 
 As mentioned earlier, this dataset is a publication of the NOAA, but this report used a special dataset from the Reproducible Research course on Coursera, which can be downloaded [here](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2).
 
@@ -25,7 +25,7 @@ The dataset is composed by 902297 observations and 37 variables from all the sta
 
 A new column is added, which contains the year of the observation as a factor, for use in later calculations.
 
-```{r}
+```{r cache=TRUE}
 storm$YEAR <- strptime(storm$BGN_DATE, "%m/%d/%Y %H:%M:%S")$year + 1900
 storm$YEAR <- as.factor(storm$YEAR)
 ```
@@ -43,7 +43,7 @@ Although the above events are the ones with more occurrences, this report analyz
 
 In order to analyze the type of event with most impact, a subset of the data is store as a new dataset, and the variables **FATALITIES** and **INJURIES** are summarized and grouped by the type of event.
 
-```{r}
+```{r cache=TRUE}
 #New dataset
 populationDMG <- storm[,c("EVTYPE","YEAR","STATE","FATALITIES","INJURIES")]
 
@@ -72,7 +72,7 @@ Although there are other categories in the above columns, the *Storm Data* docum
 
 This code creates a new dataset with the columns specified above, and make the necessary changes to the values, in order to use the same scale on it.
 
-```{r}
+```{r cache=TRUE}
 econDMG <- storm[,c("EVTYPE","YEAR","STATE","PROPDMG","PROPDMGEXP","CROPDMG","CROPDMGEXP")]
 econDMG <- subset(econDMG,econDMG$PROPDMGEXP %in% c("b","B","m","M","k","K") | 
                          econDMG$CROPDMGEXP %in% c("b","B","m","M","k","K"))
@@ -83,9 +83,9 @@ econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="M"] <- econDMG$CROPDMG[toupper(eco
 econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="K"] <- econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP)=="K"]/1e+06
 ```
 
-With this new dataset, we summarize the data using the economic variables.
+With this new dataset, the data is summarized using the economic variables.
 
-```{r}
+```{r cache=TRUE}
 economic.damage <- aggregate(cbind(econDMG$PROPDMG,
                                    econDMG$CROPDMG,
                                    (econDMG$PROPDMG+econDMG$CROPDMG)) ~ 
@@ -98,3 +98,5 @@ economic.damage$EVENT <- reorder(economic.damage$EVENT,
                                  sort(economic.damage$TOTAL,decreasing=F))
 ```
 
+
+##Results

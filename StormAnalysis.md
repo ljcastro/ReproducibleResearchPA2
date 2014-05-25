@@ -1,7 +1,7 @@
 Tornado are the event with most impact on USA
 =============================================
 
-#Synopsis
+##Synopsis
 
 This report describes how Tornadoes have a direct damage impact in both, population and economics, in the USA.
 
@@ -10,7 +10,7 @@ Based on the *Storm Data* database, which is an official publication of the **Na
 The events contained in the dataset are from years 1950 to 2011, although the more recent years are the more complete and rich, due to the lack in early years for collect data.
 
 
-#Data Processing
+##Data Processing
 
 As mentioned earlier, this dataset is a publication of the NOAA, but this report used a special dataset from the Reproducible Research course on Coursera, which can be downloaded [here](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2).
 
@@ -119,3 +119,20 @@ econDMG$CROPDMG[toupper(econDMG$CROPDMGEXP) == "K"] <- econDMG$CROPDMG[toupper(e
 ```
 
 
+With this new dataset, the data is summarized using the economic variables.
+
+
+```r
+economic.damage <- aggregate(cbind(econDMG$PROPDMG, econDMG$CROPDMG, (econDMG$PROPDMG + 
+    econDMG$CROPDMG)) ~ econDMG$EVTYPE, FUN = sum)
+economic.damage <- economic.damage[order(economic.damage[, 4], decreasing = T), 
+    ]
+names(economic.damage) <- c("EVENT", "PROPERTY", "CROP", "TOTAL")
+economic.damage <- economic.damage[1:10, ]
+economic.damage$EVENT <- reorder(economic.damage$EVENT, sort(economic.damage$TOTAL, 
+    decreasing = F))
+```
+
+
+
+##Results
